@@ -4,6 +4,7 @@ package com.example.EmployeeLeave.serviceimpl;
 import com.example.EmployeeLeave.dto.EmployeeDTO;
 import com.example.EmployeeLeave.entity.Department;
 import com.example.EmployeeLeave.entity.Employee;
+import com.example.EmployeeLeave.exception.ResourceNotFoundException;
 import com.example.EmployeeLeave.repository.DepartmentRepository;
 import com.example.EmployeeLeave.repository.EmployeeRepository;
 import com.example.EmployeeLeave.service.EmployeeService;
@@ -95,11 +96,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setStatus(dto.getStatus());
 
         // Per Story 7: Map the Department entity instead of a plain string[cite: 2]
-        if (dto.getDepartmentId() != null) {
-            Department department = departmentRepository.findById(dto.getDepartmentId())
-                    .orElseThrow(() -> new RuntimeException("Department not found with id: " + dto.getDepartmentId()));
-            employee.setDepartment(department);
+        // Check for null BEFORE calling findById
+        if (dto.getDepartmentId() == null) {
+            throw new IllegalArgumentException("Department ID cannot be null when creating an employee.");
         }
+
+        Department department = departmentRepository.findById(dto.getDepartmentId())
+                .orElseThrow(() -> new RuntimeException("Department not found with id: " + dto.getDepartmentId()));
 
         return employee;
     }

@@ -1,6 +1,8 @@
 package com.example.EmployeeLeave.dto;
 
 import lombok.Data;
+import jakarta.validation.constraints.NotNull; // 1. Add this import
+
 import java.time.LocalDate;
 
 @Data
@@ -16,12 +18,9 @@ public class EmployeeDTO {
     private String role;
     private String status;
 
-    // You can include specific IDs or nested DTOs here
+    // 2. Add the validation annotation here
+    @NotNull(message = "Department ID is required")
     private Long departmentId;
-    private String departmentName; // Optional: include if you want to show the name
 
-    // If you need address/project details, consider creating AddressDTO and ProjectDTO
-    // and including them here as:
-    // private AddressDTO address;
-    // private List<Long> projectIds;
+    private String departmentName;
 }
